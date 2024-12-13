@@ -5,13 +5,50 @@ import { createConnection } from 'npm:mysql2/promise';
 const cache = new Map<string, any>();
 const queryTableMap = new Map<string, Set<string>>(); // Maps cache keys to table names
 
+const PROXY_PORT = 3307; // Port for the proxy server
+const MYSQL_HOST = "localhost"; // Host of the actual MySQL server
+const MYSQL_PORT = 3306; // Port of the actual MySQL server
+
 const parser = new Parser.Parser();
 const dbConfig = {
-  host: 'localhost',
+  port: MYSQL_PORT,
+  host: MYSQL_HOST,
   user: 'root',
   password: 'password',
   database: 'test',
 };
+
+
+async function startMySQLProxyServer() {
+  const server = Deno.listen({ port: PROXY_PORT });
+  console.log(`MySQL Proxy Server is running on port ${PROXY_PORT}`);
+
+  for await (const clientConn of server) {
+    console.log("New connection received");
+
+    const mysqlConn = await Deno.connect({ hostname: MYSQL_HOST, port: MYSQL_PORT });
+    console.log("Connected to MySQL server");
+
+    // Forward data from client to MySQL server
+    clientConn.readable.pipeTo(mysqlConn.writable).catch((err) => {
+      console.error("Error forwarding data from client to MySQL server:", err);
+    });
+
+    // Forward data from MySQL server to client
+    mysqlConn.readable.pipeTo(clientConn.writable).catch((err) => {
+      console.error("Error forwarding data from MySQL server to client:", err);
+    });
+
+    // Close connections when done
+    clientConn.closed.catch(() => {
+      mysqlConn.close();
+    });
+    mysqlConn.closed.catch(() => {
+      clientConn.close();
+    });
+  }
+}
+
 
 // Function to execute query and manage caching
 async function executeQuery(query: string) {
