@@ -2,6 +2,14 @@
 
 import mysql from 'mysql2';
 
+const REMOTE_HOST = '127.0.0.1';
+const REMOTE_USER = 'stagesol';
+const REMOTE_PASSWORD = 'stagesol';
+const REMOTE_DATABASE = 'stagesol';
+const REMOTE_PORT = 3306;
+
+const PROXY_PORT = 3307;
+
 const server = mysql.createServer((conn) => {
   console.log('connection');
 
@@ -16,10 +24,11 @@ const server = mysql.createServer((conn) => {
   });
 
   const remote = mysql.createConnection({
-    user: 'stagesol',
-    database: 'stagesol',
-    host: '127.0.0.1',
-    password: 'stagesol',
+    user: REMOTE_USER,
+    database: REMOTE_DATABASE,
+    host: REMOTE_HOST,
+    password: REMOTE_PASSWORD,
+    port: REMOTE_PORT,
   });
 
   conn.on('query', (sql) => {
@@ -47,4 +56,4 @@ const server = mysql.createServer((conn) => {
 });
 
 console.log('server listening on port 3307');
-server.listen(3307);
+server.listen(PROXY_PORT);
