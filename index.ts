@@ -11,8 +11,6 @@ const server = mysql.createServer((conn) => {
     connectionId: 1234,
     statusFlags: 2,
     characterSet: 33,
-    authPlugin: 'mysql_native_password',
-    capabilityFlags: 2181036031
   });
 
   const remote = mysql.createConnection({
