@@ -2,7 +2,7 @@
 
 import mysql from 'mysql2';
 
-const REMOTE_HOST = '127.0.0.1';
+const REMOTE_HOST = 'mysql';
 const REMOTE_USER = 'stagesol';
 const REMOTE_PASSWORD = 'stagesol';
 const REMOTE_DATABASE = 'stagesol';
@@ -40,19 +40,29 @@ const server = mysql.createServer((conn) => {
         // response to a 'select', 'show' or similar
         const rows = arguments[1],
         columns = arguments[2];
-        console.log('rows', rows);
-        console.log('columns', columns);
         conn.writeTextResult(rows, columns);
+        conn.writeEof();
+        console.log('query');
+        conn.end();
       } else {
         // response to an 'insert', 'update' or 'delete'
         const result = arguments[1];
-        console.log('result', result);
+        console.log('update');
         conn.writeOk(result);
+        conn.writeEof();
+        conn.end();
       }
     });
   });
 
-  conn.on('end', remote.end.bind(remote));
+  remote.on('end', () => {
+    console.log('remote end');
+  });
+  remote.on('error', () => {
+    console.log('remote error');
+  });
+
+  conn.on('end', () => { console.log('conn end'); });
 });
 
 console.log('server listening on port 3307');
