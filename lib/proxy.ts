@@ -1,6 +1,6 @@
 import { Packet } from './packet';
 import type { Socket, TCPSocketListener } from 'bun';
-import { getBufferContent, getSocketId, getSQLQuery } from './utils';
+import { getBufferContent, getParsedSQLQuery } from './utils';
 
 export class Proxy {
   private clientSocket: TCPSocketListener | null;
@@ -65,9 +65,10 @@ export class Proxy {
 
   public async pipeFromClient(clientSocket: Socket, remoteSocket: Socket, data: Buffer): Promise<void> {
     if (!clientSocket || !remoteSocket) return;
-    const query = getSQLQuery(data);
+    const bufferData = getBufferContent(data);
+    const query = getParsedSQLQuery(bufferData);
     if (query) {
-      console.log('pipeFromClient: ', query);
+      console.log('received query: ', query);
     }
     remoteSocket.write(data);
   }
