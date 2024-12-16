@@ -35,6 +35,11 @@ export function getParsedSQLQuery(query: string): TableColumnAst | null {
         return null;
     }
     query = query.replace(/[\x00-\x1F\x7F-\x9F]/g, '').trim();
-    const parsed = parser.parse(query.trim());
-    return parsed;
+    try {
+      const parsed = parser.parse(query.trim());
+      return parsed;
+    } catch (error) { 
+      console.error('error parsing query: ', error);
+      return null;
+    }
 }

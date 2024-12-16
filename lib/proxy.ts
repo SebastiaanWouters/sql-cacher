@@ -1,4 +1,3 @@
-import { Packet } from './packet';
 import type { Socket, TCPSocketListener } from 'bun';
 import { getBufferContent, getParsedSQLQuery } from './utils';
 
@@ -32,6 +31,7 @@ export class Proxy {
             console.error('received mysql data but client socket not connected');
             return;
           }
+          console.log('received mysql data');
           this.pipeFromRemote(this.clientOpenSocket, socket, data);
         },
       },
