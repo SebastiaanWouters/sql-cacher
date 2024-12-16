@@ -1,5 +1,5 @@
 import type { Socket, TCPSocketListener } from 'bun';
-import { getBufferContent, getParsedSQLQuery } from './utils';
+import { getBufferContent, getParsedSQLQuery, processReturnData } from './utils';
 
 export class Proxy {
   private clientSocket: TCPSocketListener | null;
@@ -31,8 +31,11 @@ export class Proxy {
             console.error('received mysql data but client socket not connected');
             return;
           }
-          console.log('received mysql data');
+          processReturnData(data);
           this.pipeFromRemote(this.clientOpenSocket, socket, data);
+        },
+        close: () => {
+          console.log('mysql socket closed');
         },
       },
     });

@@ -1,5 +1,6 @@
 import type { Socket } from 'bun';
 import { Parser, type TableColumnAst } from 'node-sql-parser';
+import { parseMySQLPacket } from './parser';
 
 const parser = new Parser();
 
@@ -42,4 +43,9 @@ export function getParsedSQLQuery(query: string): TableColumnAst | null {
       console.error('error parsing query: ', error);
       return null;
     }
+}
+
+export function processReturnData(data: Buffer): void {
+  let parsed = parseMySQLPacket(data);
+  console.log('received mysql data: ', JSON.stringify(parsed));
 }
