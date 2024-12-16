@@ -9,6 +9,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@types/node": "^22.10.2",
+    "mysql2": "^3.11.5",
     "node-sql-parser": "^5.3.5"
   }
 }
