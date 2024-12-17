@@ -1,0 +1,12 @@
+services:
+  mysql-proxy:
+    image: oven/bun
+    networks:
+      - scone_scone
+    volumes:
+      - ./:/app
+    command: bun run --watch /app/index.ts
+
+networks:
+  scone_scone:
+    external: true
