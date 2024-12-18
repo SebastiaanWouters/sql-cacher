@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { PacketType, packetTypeMap } from "./PacketType.ts";
+import { getPacketTypeString } from "./PacketType.ts";
 
 // General MySQL Packet Class
 export class MySQLPacket {
@@ -22,8 +22,7 @@ export class MySQLPacket {
   }
 
   getPacketType(): string {
-    console.log(this.payload.readUIntLE(0, 1).toString());
-    return packetTypeMap[(0 as PacketType)];
+    return getPacketTypeString(this.payload.readUIntLE(0, 1));
   }
 
   getPayload(): Buffer {
@@ -38,6 +37,7 @@ export class MySQLPacket {
   }
 
   static fromBuffer(buffer: Buffer): MySQLPacket {
+    console.log('Buffer: ', buffer);
     if (buffer.length < 4) {
       throw new Error('Buffer is too small to be a valid MySQL packet');
     }
