@@ -8,10 +8,6 @@ export class QueryResponsePacket extends MySQLPacket {
     super(packetLength, packetSequence, payloadData);
   }
 
-  getPayloadData(): Buffer {
-    return this.payload;
-  }
-
   override getPacketType(): string {
     return getQueryResponsePacketTypeString(this.payload.readUIntLE(0, 1));
   }
