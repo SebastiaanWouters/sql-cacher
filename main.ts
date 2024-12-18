@@ -1,4 +1,5 @@
 import { createServer, Socket } from 'node:net';
+import { MySQLPacket } from './lib/index.ts';
 import process from 'node:process';
 
 const clientPort = 3307;
@@ -18,13 +19,15 @@ if (import.meta.main) {
 
     // Forward data from the client to the MySQL server
     clientSocket.on('data', (data) => {
-      console.log('Received data from client:', data.toString('hex'));
+      const clientPacket = MySQLPacket.fromBuffer(data);
+      // console.log('Received data from client:', clientPacket.toString());
       mysqlSocket.write(data);
     });
 
     // Forward data from the MySQL server to the client
     mysqlSocket.on('data', (data) => {
-      console.log('Received data from MySQL server:', data.toString('hex'));
+      const mysqlPacket = MySQLPacket.fromBuffer(data);
+      console.log('Received data from MySQL server:', mysqlPacket.toString());
       clientSocket.write(data);
     });
 
