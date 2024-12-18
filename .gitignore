@@ -178,3 +178,6 @@ dist
 # certs
 *.pem
 certs
+
+#build output
+bin
