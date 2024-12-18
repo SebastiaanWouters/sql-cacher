@@ -12,7 +12,7 @@ export class QueryPacket extends MySQLPacket {
     return getQueryPacketTypeString(this.payload.readUIntLE(0, 1));
   }
 
-  getQuery(): string {
+  public getQuery(): string {
     return this.payload.toString('utf8', 1);
   }
 

@@ -38,7 +38,6 @@ export class MySQLPacket {
   }
 
   static fromBuffer(buffer: Buffer): MySQLPacket {
-    console.log('Buffer: ', buffer);
     if (buffer.length < 4) {
       throw new Error('Buffer is too small to be a valid MySQL packet');
     }

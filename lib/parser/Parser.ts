@@ -12,4 +12,13 @@ export class PacketParser {
         return QueryResponsePacket.fromBuffer(buffer);
     }
   }
+
+  public static getPacketOrigin(buffer: Buffer): 'CLIENT' | 'SERVER' {
+    const sequenceId = buffer.readUIntLE(3, 1);
+    if (sequenceId === 0) {
+      return 'CLIENT';
+    } else {
+      return 'SERVER';
+    }
+  }
 }
