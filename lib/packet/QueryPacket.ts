@@ -1,20 +1,15 @@
 import { Buffer } from 'node:buffer';
 import { MySQLPacket } from './Packet.ts';
+import { getQueryPacketTypeString } from "./PacketType.ts";
 
 export class QueryPacket extends MySQLPacket {
 
   constructor(packetLength: number, packetSequence: number, payloadData: Buffer) {
     super(packetLength, packetSequence, payloadData);
-    this.payload = payloadData;
   }
 
-  getPayloadData(): Buffer {
-    return this.payload;
-  }
-
-  getCommandType(): number {
-    console.log('Command Raw: ', this.payload[0]);
-    return this.payload.readUIntLE(0, 1);
+  override getPacketType(): string {
+    return getQueryPacketTypeString(this.payload.readUIntLE(0, 1));
   }
 
   getQuery(): string {
@@ -32,7 +27,7 @@ export class QueryPacket extends MySQLPacket {
   }
 
   override toString(): string {
-    return `Packet Length: ${this.packetLength}, Packet Sequence: ${this.packetSequence}, Query Type: ${this.getCommandType()}, Query: ${this.getQuery()}`;
+    return `Packet Length: ${this.packetLength}, Packet Sequence: ${this.packetSequence}, Query Type: ${this.getPacketType()}, Query: ${this.getQuery()}`;
   }
 }
 

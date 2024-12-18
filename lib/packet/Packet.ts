@@ -1,16 +1,17 @@
 import { Buffer } from 'node:buffer';
-import { getPacketTypeString } from "./PacketType.ts";
 
 // General MySQL Packet Class
 export class MySQLPacket {
   protected packetLength: number;
   protected packetSequence: number;
   protected payload: Buffer;
+  protected packetType: string;
 
   constructor(packetLength: number, packetSequence: number, payload: Buffer) {
     this.packetLength = packetLength;
     this.packetSequence = packetSequence;
     this.payload = payload;
+    this.packetType = 'UNKNOWN_PACKET_TYPE';
   }
 
   getPacketLength(): number {
@@ -21,12 +22,12 @@ export class MySQLPacket {
     return this.packetSequence;
   }
 
-  getPacketType(): string {
-    return getPacketTypeString(this.payload.readUIntLE(0, 1));
-  }
-
   getPayload(): Buffer {
     return this.payload;
+  }
+
+  getPacketType(): string {
+    return this.packetType;
   }
 
   toBuffer(): Buffer {
@@ -48,6 +49,6 @@ export class MySQLPacket {
   }
 
   toString(): string {
-    return `Packet Length: ${this.packetLength}, Packet Sequence: ${this.packetSequence}, Packet Type: ${this.getPacketType()}, Payload: ${this.payload.toString('hex').slice(0,32)}`;
+    return `Packet Length: ${this.packetLength}, Packet Sequence: ${this.packetSequence}, Payload: ${this.payload.toString('hex').slice(0,32)}`;
   }
 }
