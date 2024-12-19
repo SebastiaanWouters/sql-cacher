@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { QueryResponsePacket } from "./QueryResponsePacket.ts";
+import { COMQueryResponsePacket } from "./COMQueryResponsePacket.ts";
 
 export type OkPacketPayload = {
   affectedRows: number,
@@ -8,11 +8,7 @@ export type OkPacketPayload = {
   warnings: number
 };
 
-export class OkPacket extends QueryResponsePacket {
-
-  constructor(packetLength: number, packetSequence: number, payloadData: Buffer) {
-    super(packetLength, packetSequence, payloadData);
-  }
+export class OkPacket extends COMQueryResponsePacket {
 
   public getStructuredPayload(): OkPacketPayload {
     return {
@@ -24,7 +20,7 @@ export class OkPacket extends QueryResponsePacket {
   }
 
   static override fromBuffer(buffer: Buffer): OkPacket {
-    const mysqlPacket = QueryResponsePacket.fromBuffer(buffer);
+    const mysqlPacket = COMQueryResponsePacket.fromBuffer(buffer);
     const payloadData = mysqlPacket.getPayload();
     return new OkPacket(
       mysqlPacket.getPacketLength(),

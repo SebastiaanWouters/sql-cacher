@@ -20,7 +20,7 @@ export enum QueryPacketType {
 }
 
 // Function to map packet type numbers to string representations
-export function getQueryResponsePacketTypeString(packetType: number): string {
+export function getCOMQueryResponsePacketTypeString(packetType: number) {
   switch (packetType) {
     case QueryPacketResponseType.OK:
       return 'OK';
@@ -39,7 +39,7 @@ export function getQueryResponsePacketTypeString(packetType: number): string {
   }
 }
 
-export function getQueryPacketTypeString(packetType: number): string {
+export function getCOMQueryPacketTypeString(packetType: number) {
   switch (packetType) {
     case QueryPacketType.COM_QUERY:
       return 'COM_QUERY';

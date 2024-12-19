@@ -1,21 +1,17 @@
 import { Buffer } from 'node:buffer';
 import { MySQLPacket } from './Packet.ts';
-import { getQueryResponsePacketTypeString } from "./PacketType.ts";
+import { getCOMQueryResponsePacketTypeString } from "./PacketType.ts";
 
-export class QueryResponsePacket extends MySQLPacket {
-
-  constructor(packetLength: number, packetSequence: number, payloadData: Buffer) {
-    super(packetLength, packetSequence, payloadData);
-  }
+export class COMQueryResponsePacket extends MySQLPacket {
 
   override getPacketType(): string {
-    return getQueryResponsePacketTypeString(this.payload.readUIntLE(0, 1));
+    return getCOMQueryResponsePacketTypeString(this.payload.readUIntLE(0, 1));
   }
 
-  static override fromBuffer(buffer: Buffer): QueryResponsePacket {
+  static override fromBuffer(buffer: Buffer): COMQueryResponsePacket {
     const mysqlPacket = MySQLPacket.fromBuffer(buffer);
     const payloadData = mysqlPacket.getPayload();
-    return new QueryResponsePacket(
+    return new COMQueryResponsePacket(
       mysqlPacket.getPacketLength(),
       mysqlPacket.getPacketSequence(),
       payloadData
