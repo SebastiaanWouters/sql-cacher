@@ -1,14 +1,19 @@
 import { Buffer } from 'node:buffer';
 import { MySQLPacket } from './Packet.ts';
 import { getCOMQueryPacketTypeString } from "./PacketType.ts";
+import { Query, QueryType } from "../query/Query.ts";
 
 export class COMQueryPacket extends MySQLPacket {
   override getPacketType(): string {
     return getCOMQueryPacketTypeString(this.payload.readUIntLE(0, 1));
   }
 
-  public getQuery(): string {
-    return this.payload.toString('utf8', 1);
+  public getQuery(): Query {
+    return Query.fromPayload(this.payload);
+  }
+
+  public getQueryType(): QueryType {
+    return this.getQuery().getQueryType();
   }
 
   static override fromBuffer(buffer: Buffer): COMQueryPacket {
